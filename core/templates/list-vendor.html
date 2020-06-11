@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-sm-11">
                 <a href="/edit/vendor/">
-                    <button class="btn btn-success" id="" type="button">Cadastrar</button>
+                    <button class="btn btn-success" id="" type="button" style="margin-right: -75px;">Cadastrar Fornecedor</button>
                 </a>
             </div>
         </div>
@@ -51,6 +51,7 @@
             </table>
         </div>
     </div>
+    <div class="modal fade delete_vendor" tabindex="-1" aria-hidden="true">
 </div>
 <script>
     var data = [];
@@ -67,7 +68,6 @@
                         type: "GET",
                         data: data,
                         complete: function(response){
-                            console.log('foi');
                             $(".scrollbar-table").floatingScroll();
                         }
                 },
@@ -90,6 +90,14 @@
 
         });
     }
+    $(document).on('click', 'a[notification-modal]', function(e) {
+        e.preventDefault();
+        $.get($(this).attr('href')).done(function (html) {
+            $('.modal.delete_vendor').html(html);
+            $('.modal.delete_vendor').modal('show');
+        });
+    });
 
 </script>
+
 {% endblock %}

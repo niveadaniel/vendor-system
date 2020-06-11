@@ -36,17 +36,24 @@ def save_vendor(request):
     if len(cnpj) < 14:
         return JsonResponse({'success': False, 'message': 'CNPJ incorreto'})
     else:
-        existing_vendor_cnpj = Vendor.objects.filter(cnpj_vendor=cnpj)
-        if existing_vendor_cnpj:
-            return JsonResponse({'success': False, 'message': 'CNPJ já cadastrado no sistema'})
-        else:
-            if vendor_id:
+        if vendor_id:
+            vendor_data = Vendor.objects.get(id=vendor_id)
+            if cnpj != vendor_data.cnpj_vendor:
+                existing_vendor_cnpj = Vendor.objects.filter(cnpj_vendor=cnpj)
+                if existing_vendor_cnpj:
+                    return JsonResponse({'success': False, 'message': 'CNPJ já cadastrado no sistema'})
+            else:
                 vendor = Vendor.objects.filter(id=vendor_id).update(name=name, cnpj_vendor=cnpj, city=city)
                 vendor = Vendor.objects.get(id=vendor_id)
+                return JsonResponse({'success': True, 'id': vendor.id})
+        else:
+            existing_vendor_cnpj = Vendor.objects.filter(cnpj_vendor=cnpj)
+            if existing_vendor_cnpj:
+                return JsonResponse({'success': False, 'message': 'CNPJ já cadastrado no sistema'})
             else:
                 vendor = Vendor.objects.create(name=name, cnpj_vendor=cnpj, city=city)
 
-            return JsonResponse({'success': True, 'message': 'Salvo com sucesso!', 'id': vendor.id})
+                return JsonResponse({'success': True ,'id': vendor.id})
 
 
 def create_data_table_vendor(vendor):
@@ -54,14 +61,20 @@ def create_data_table_vendor(vendor):
     if vendor:
         for v in vendor:
             vendor_list.append([v.name,
-                               v.cnpj_vendor,
-                               v.city,
-                                "<button type='button' class='btn btn-danger btn-sm' id=''>"
-                                    "<span class='glyphicon glyphicon-remove'></span></button>"
-                                "<button type='button' class='btn btn-success btn-sm' id=''>"
-                                    "<span class='glyphicon glyphicon-edit'></span></button>"
-                               "<button type='button' class='btn btn-primary btn-sm' id=''>"
-                                    "Cadastrar Produtos</button>"])
+                                v.cnpj_vendor,
+                                v.city,
+                                "<a href='/delete/vendor/?id=%s' notification-modal='1'>"
+                                    "<button type='button' class='btn btn-danger btn-sm' id=''>"
+                                        "<span class='glyphicon glyphicon-remove'></span>"
+                                    "</button>"
+                                "</a>" % str(v.id) +
+                                "<a href='/edit/vendor/?id=%s'>"
+                                    "<button type='button' class='btn btn-success btn-sm' id=''>"
+                                        "<span class='glyphicon glyphicon-edit'></span></button>"
+                                "</a>" % str(v.id) +
+                                   "<button type='button' class='btn btn-primary btn-sm'>"
+                                        "Cadastrar Produtos"
+                                   "</button>"])
     return vendor_list
 
 
@@ -77,6 +90,23 @@ def get_vendor_list(request):
 
     total = vendor.count()
     vendor_list = create_data_table_vendor(vendor)
-    print(vendor_list)
     return JsonResponse({'data': vendor_list, 'draw': draw + 1, 'recordsTotal': total, 'recordsFiltered': total})
+
+
+@csrf_exempt
+def delete_vendor(request):
+    vendor_id = request.GET.get('id')
+    if vendor_id:
+        vendor = Vendor.objects.get(id=vendor_id)
+    dic = {'vendor': vendor}
+    return render(request, 'delete-vendor.html', dic)
+
+
+@csrf_exempt
+def action_delete_vendor(request, vendor_id):
+    if vendor_id:
+        Vendor.objects.filter(id=vendor_id).delete()
+        return JsonResponse({'success':True})
+    else:
+        return JsonResponse({'success': False, 'message': 'Não foi possível excluir'})
 

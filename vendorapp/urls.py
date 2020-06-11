@@ -23,5 +23,7 @@ urlpatterns = [
     path('list/vendor/', views.list_vendor, name='list_vendor'),
     path('edit/vendor/', views.edit_vendor, name='edit_vendor'),
     path('save/vendor/', views.save_vendor, name='save_vendor'),
-    path('api/list_vendor/', views.get_vendor_list, name='get_vendor_list')
+    path('api/list_vendor/', views.get_vendor_list, name='get_vendor_list'),
+    path('delete/vendor/', views.delete_vendor, name='delete_vendor'),
+    path('api/delete_vendor/<int:vendor_id>/', views.action_delete_vendor, name='action_delete_vendor')
 ]

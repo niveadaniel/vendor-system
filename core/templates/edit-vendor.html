@@ -40,19 +40,19 @@
             <div class="row">
                 <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6">
                     <label class="control-label">Nome do Fornecedor</label>
-                    <input class="form_control" type="hidden" name="id" value="">
-                    <input class="form-control" type="text" name="name" id="name" value="">
+                    <input class="form_control" type="hidden" name="id" value="{% if vendor %}{{vendor.id}}{% endif %}">
+                    <input class="form-control" type="text" name="name" id="name" value="{% if vendor %}{{vendor.name}}{% endif %}">
                 </div>
             </div>
             <br>
             <div class="row">
                 <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3">
                     <label class="control-label">CNPJ</label>
-                    <input class="form-control" type="text" min="0" name="cnpj" id="cnpj" value="" required>
+                    <input class="form-control" type="text" min="0" name="cnpj" id="cnpj" value="{% if vendor %}{{vendor.cnpj_vendor}}{% endif %}" required>
                 </div>
                 <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3">
                     <label class="control-label">Cidade</label>
-                    <input class="form-control" type="text" min="1" name="city" id="city" value="">
+                    <input class="form-control" type="text" min="1" name="city" id="city" value="{% if vendor %}{{vendor.city}}{% endif %}">
                 </div>
             </div>
             <br>
@@ -63,8 +63,6 @@
                 </div>
             </div>
             <br>
-            <div class="alert alert-danger alert-error-save"></div>
-            <div class="alert alert-success alert-success-save"></div>
         </div>
         <br>
         <br>
@@ -73,14 +71,10 @@
 
 <script>
 
-
-
     $(document).ready(function(){
-        $('.alert-error-save').hide();
-        $('.alert-success-save').hide();
         $('#cnpj').mask('000.000.000-00');
 
-        /* $('.save_vendor_form').submit(function(e){
+        $('.save_vendor_form').submit(function(e){
             e.preventDefault();
             $form = $('.save_vendor_form');
             //form = $form.serializeArray();
@@ -95,18 +89,12 @@
                 dataType: 'json',
                 success: function(data){
                     if (data.success){
-                        location.href = '/edit/vendor/?id=' + data.id;
+                        console.log('foi');
+                        location.href = '/list/vendor/';
                     }
-                    else{
-                        $('.alert-error-save').html(data.message);
-                        $('.alert-error-save').show();
-                    }
-                }
-                error: function (xhr, ajaxOptions, thrownError) {
-                        $('.alert-error-save').show();
                 }
             });
-        }); */
+        });
 
     });
 
