@@ -1,0 +1,116 @@
+{% extends "model-page.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<style>
+
+    h2 {
+        margin-top: 50px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: auto;
+    }
+
+    .label {
+        margin-left: 50px;
+        background-color: #20B2AA;
+    }
+
+
+</style>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-10">
+            <h2 style="font-family: Arial;">Cadastro de Fornecedor</h2>
+        </div>
+        <div class="col-sm-2">
+            <h2><span class="label label-default">{{owner.owner_code}}</span></h2>
+        </div>
+    </div>
+    <br>
+    <br>
+    <form enctype="multipart/form-data" method="POST" id="register_vendor" class="save_vendor_form" action="{% url 'save_vendor' %}">
+        <div class="main">
+            <div class="row">
+                <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6">
+                    <label class="control-label">Nome do Fornecedor</label>
+                    <input class="form_control" type="hidden" name="id" value="">
+                    <input class="form-control" type="text" name="name" id="name" value="">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3">
+                    <label class="control-label">CNPJ</label>
+                    <input class="form-control" type="text" min="0" name="cnpj" id="cnpj" value="" required>
+                </div>
+                <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3">
+                    <label class="control-label">Cidade</label>
+                    <input class="form-control" type="text" min="1" name="city" id="city" value="">
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-sm-1 col-lg-1 col-md-1 col-xs-1">
+                    <button class="btn btn-success" id="btn-save" type="submit">Salvar</button>
+                </div>
+            </div>
+            <br>
+            <div class="alert alert-danger alert-error-save"></div>
+            <div class="alert alert-success alert-success-save"></div>
+        </div>
+        <br>
+        <br>
+    </form>
+</div>
+
+<script>
+
+
+
+    $(document).ready(function(){
+        $('.alert-error-save').hide();
+        $('.alert-success-save').hide();
+        $('#cnpj').mask('000.000.000-00');
+
+        /* $('.save_vendor_form').submit(function(e){
+            e.preventDefault();
+            $form = $('.save_vendor_form');
+            //form = $form.serializeArray();
+            var form = document.getElementById('register_vendor');
+            var formData = new FormData(form);
+            $.ajax({
+                type: $form.attr('method'),
+                url: $form.attr('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(data){
+                    if (data.success){
+                        location.href = '/edit/vendor/?id=' + data.id;
+                    }
+                    else{
+                        $('.alert-error-save').html(data.message);
+                        $('.alert-error-save').show();
+                    }
+                }
+                error: function (xhr, ajaxOptions, thrownError) {
+                        $('.alert-error-save').show();
+                }
+            });
+        }); */
+
+    });
+
+</script>
+
+
+{% endblock %}

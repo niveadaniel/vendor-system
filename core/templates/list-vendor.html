@@ -26,18 +26,9 @@
     <br>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-2">
-                <label class="control-label"><b>Fornecedor</b></label>
-                <select class="selectpicker form-control" name="tower" id="tower" data-live-search="True">
-                    <option value="">Todos</option>
-                    {% for tower in towers %}
-                        <option value="{{tower.id}}">{{tower}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-sm-10">
-                <a href="/edit/resident/">
-                    <button class="btn btn-success" id="register" type="button">Cadastrar</button>
+            <div class="col-sm-11">
+                <a href="/edit/vendor/">
+                    <button class="btn btn-success" id="" type="button">Cadastrar</button>
                 </a>
             </div>
         </div>
@@ -49,11 +40,10 @@
             <table class="table table-bordered" id="data_table" style="padding: inherit;">
                 <thead class="thead">
                     <tr>
-                        <th scope="col" style="width: 170px;">ID</th>
-                        <th scope="col" style="width: 170px;">Nome</th>
+                        <th scope="col" style="width: 500px;">Nome</th>
                         <th scope="col">CNPJ</th>
                         <th scope="col" style="width: 250px;">Cidade</th>
-                        <th scope="col" id="delete" style="width: 100px;"></th>
+                        <th scope="col" id="delete" style="width: 210px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,10 +53,9 @@
     </div>
 </div>
 <script>
-    /* var data = [];
+    var data = [];
     generateTable();
     function generateTable(){
-        data = {'tower': $('#tower').val()}
         datatable_ticket = $('#data_table').DataTable({
                 "destroy": true,
                 "fixedHeader": false,
@@ -74,8 +63,8 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax":{
-                        url: "/api/list_owners/",
-                        type: "POST",
+                        url: "/api/list_vendor/",
+                        type: "GET",
                         data: data,
                         complete: function(response){
                             console.log('foi');
@@ -87,9 +76,9 @@
                 "language": {
                     "lengthMenu": "Mostrando _MENU_ registros por página.",
                     "zeroRecords": "Não foram encontrados registros",
-                    "info": "Exibindo _START_ até _END_ de um total de _TOTAL_ proprietários",
+                    "info": "Exibindo _START_ até _END_ de um total de _TOTAL_ fornecedores",
                     "infoEmpty": "Não foram encontrados registros",
-                    "infoFiltered": "(filtrados de um total de _MAX_ proprietários)",
+                    "infoFiltered": "(filtrados de um total de _MAX_ fornecedores)",
                     "paginate": {
                         "first": "Primeiro",
                         "last": "Último",
@@ -101,9 +90,6 @@
 
         });
     }
-    $('#tower').change(function(){
-        generateTable();
-    }); */
 
 </script>
 {% endblock %}
