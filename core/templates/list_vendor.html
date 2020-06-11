@@ -1,0 +1,109 @@
+{% extends "model-page.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/floating-scroll@3.0.6/dist/jquery.floatingscroll.css">
+<script src="https://cdn.jsdelivr.net/npm/floating-scroll@3.0.6/dist/jquery.floatingscroll.min.js"></script>
+
+<style>
+
+    .thead {
+        background-color: #66CDAA;
+    }
+
+    div button {
+        float: right;
+        margin-right: 10px;
+    }
+
+</style>
+<div>
+    <div>
+        <h1 style="text-align: center; margin-top: 50px;">Lista de Fornecedores</h1>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <label class="control-label"><b>Fornecedor</b></label>
+                <select class="selectpicker form-control" name="tower" id="tower" data-live-search="True">
+                    <option value="">Todos</option>
+                    {% for tower in towers %}
+                        <option value="{{tower.id}}">{{tower}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-10">
+                <a href="/edit/resident/">
+                    <button class="btn btn-success" id="register" type="button">Cadastrar</button>
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
+    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12">
+        <div class="scrollbar-table" id="table">
+            <table class="table table-bordered" id="data_table" style="padding: inherit;">
+                <thead class="thead">
+                    <tr>
+                        <th scope="col" style="width: 170px;">ID</th>
+                        <th scope="col" style="width: 170px;">Nome</th>
+                        <th scope="col">CNPJ</th>
+                        <th scope="col" style="width: 250px;">Cidade</th>
+                        <th scope="col" id="delete" style="width: 100px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    /* var data = [];
+    generateTable();
+    function generateTable(){
+        data = {'tower': $('#tower').val()}
+        datatable_ticket = $('#data_table').DataTable({
+                "destroy": true,
+                "fixedHeader": false,
+                "ordering": false,
+                "processing": true,
+                "serverSide": true,
+                "ajax":{
+                        url: "/api/list_owners/",
+                        type: "POST",
+                        data: data,
+                        complete: function(response){
+                            console.log('foi');
+                            $(".scrollbar-table").floatingScroll();
+                        }
+                },
+                "iDisplayLength": 50,
+                "bJQueryUI": false,
+                "language": {
+                    "lengthMenu": "Mostrando _MENU_ registros por página.",
+                    "zeroRecords": "Não foram encontrados registros",
+                    "info": "Exibindo _START_ até _END_ de um total de _TOTAL_ proprietários",
+                    "infoEmpty": "Não foram encontrados registros",
+                    "infoFiltered": "(filtrados de um total de _MAX_ proprietários)",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "search": "Buscar:"
+                }
+
+        });
+    }
+    $('#tower').change(function(){
+        generateTable();
+    }); */
+
+</script>
+{% endblock %}
