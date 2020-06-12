@@ -10,7 +10,7 @@
 <style>
 
     .thead {
-        background-color: #D3D3D3;
+        background-color: #ffb84d;
     }
 
     div button {
@@ -21,14 +21,23 @@
 </style>
 <div>
     <div>
-        <h1 style="text-align: center; margin-top: 50px;">Lista de Fornecedores</h1>
+        <h1 style="text-align: center; margin-top: 50px;">Lista de Produtos</h1>
     </div>
     <br>
     <div class="container-fluid">
         <div class="row">
+            <div class="col-sm-2">
+                <label class="control-label"><b>Fornecedor</b></label>
+                <select class="selectpicker form-control" name="vendor" id="vendor" data-live-search="True">
+                    <option value="">Todos</option>
+                    {% for v in vendor %}
+                        <option value="{{v.id}}">{{v}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="col-sm-11">
-                <a href="/edit/vendor/">
-                    <button class="btn btn-success" id="" type="button" style="margin-right: -75px;">Cadastrar Fornecedor</button>
+                <a href="/edit/product/">
+                    <button class="btn btn-success" id="" type="button" style="margin-right: -75px; margin-top: -32px;">Cadastrar Produto</button>
                 </a>
             </div>
         </div>
@@ -40,10 +49,11 @@
             <table class="table table-bordered" id="data_table" style="padding: inherit;">
                 <thead class="thead">
                     <tr>
-                        <th scope="col" style="width: 500px;">Nome</th>
-                        <th scope="col">CNPJ</th>
-                        <th scope="col" style="width: 250px;">Cidade</th>
-                        <th scope="col" style="width: 200px;"></th>
+                        <th scope="col" style="width: 350px;">Nome</th>
+                        <th scope="col">Código</th>
+                        <th scope="col" style="width: 100px;">Preço</th>
+                        <th scope="col" style="width: 320px;">Fornecedor</th>
+                        <th scope="col" style="width: 100px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +67,7 @@
     var data = [];
     generateTable();
     function generateTable(){
+        data = {'vendor': $('#vendor').val()};
         datatable_ticket = $('#data_table').DataTable({
                 "destroy": true,
                 "fixedHeader": false,
@@ -64,8 +75,8 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax":{
-                        url: "/api/list_vendor/",
-                        type: "GET",
+                        url: "/api/list_products/",
+                        type: "POST",
                         data: data,
                         complete: function(response){
                             $(".scrollbar-table").floatingScroll();
@@ -97,6 +108,10 @@
             $('.modal.delete_vendor').modal('show');
         });
     });
+    $('#vendor').change(function(){
+        generateTable();
+    });
+
 
 </script>
 

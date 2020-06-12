@@ -25,5 +25,12 @@ urlpatterns = [
     path('save/vendor/', views.save_vendor, name='save_vendor'),
     path('api/list_vendor/', views.get_vendor_list, name='get_vendor_list'),
     path('delete/vendor/', views.delete_vendor, name='delete_vendor'),
-    path('api/delete_vendor/<int:vendor_id>/', views.action_delete_vendor, name='action_delete_vendor')
+    path('api/delete_vendor/<int:vendor_id>/', views.action_delete_vendor, name='action_delete_vendor'),
+    path('list/products/', views.list_products, name='list_products'),
+    path('api/list_products/', views.get_list_products, name='get_list_products'),
+    path('edit/product/', views.edit_product, name='edit_product'),
+    path('api/get_vendor_data/<int:vendor_id>/', views.get_vendor_data, name='get_vendor_data'),
+    path('save/product/', views.save_product, name='save_product'),
+    path('delete/product/', views.delete_product, name='delete_product'),
+    path('api/delete_product/<int:product_id>/', views.action_delete_product, name='action_delete_product')
 ]
