@@ -1,19 +1,53 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from core.models import Vendor, Products
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, logout
+from django.contrib.auth import login as auth_login
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.db.models import Q
 # Create your views here.
 
 def index(request):
+    return redirect('/login/')
+
+
+def login(request):
     return render(request, 'home-page.html')
 
 
+@csrf_exempt
+def submit_login(request):
+    print(request.POST)
+    if request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        print(user)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('/list/vendor/')
+        else:
+            messages.error(request, 'Senha ou usuário inválidos, tente novamente')
+            return redirect('/login/')
+
+
+@login_required(login_url='/login/')
+@csrf_exempt
+def submit_logout(request):
+    logout(request)
+    return redirect('/login/')
+
+
+@login_required(login_url='/login/')
 @csrf_exempt
 def list_vendor(request):
     return render(request, 'list-vendor.html')
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def edit_vendor(request):
     vendor_id = request.GET.get('id')
@@ -25,6 +59,7 @@ def edit_vendor(request):
     return render(request, 'edit-vendor.html', dic)
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def save_vendor(request):
     vendor_id = request.POST['id']
@@ -86,6 +121,7 @@ def create_data_table_vendor(vendor):
     return vendor_list
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def get_vendor_list(request):
     draw = int(request.GET['draw'])
@@ -102,6 +138,7 @@ def get_vendor_list(request):
                          'recordsTotal': total, 'recordsFiltered': total})
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def delete_vendor(request):
     vendor_id = request.GET.get('id')
@@ -111,6 +148,7 @@ def delete_vendor(request):
     return render(request, 'delete-vendor.html', dic)
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def action_delete_vendor(request):
     print(request.POST)
@@ -143,6 +181,7 @@ def create_data_table_products(products):
     return products_list
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def list_products(request):
     vendor = Vendor.objects.all()
@@ -150,6 +189,7 @@ def list_products(request):
     return render(request, 'list-products.html', dic)
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def get_list_products(request):
     vendor = request.POST['vendor'] if request.POST['vendor'] else None
@@ -169,6 +209,7 @@ def get_list_products(request):
     return JsonResponse({'data': products_list, 'draw': draw + 1, 'recordsTotal': total, 'recordsFiltered': total})
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def edit_product(request):
     vendor_id = request.GET['vendor'] if 'vendor' in request.GET else None
@@ -187,6 +228,7 @@ def edit_product(request):
     return render(request, 'edit-product.html', dic)
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def get_vendor_data(request, vendor_id):
     vendor = Vendor.objects.get(id=vendor_id)
@@ -195,6 +237,7 @@ def get_vendor_data(request, vendor_id):
     return JsonResponse({'cnpj': cnpj, 'city': city})
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def save_product(request):
     product_id = request.POST['id']
@@ -219,7 +262,7 @@ def save_product(request):
         return JsonResponse({'success': True, 'existed_vendor': True})
 
 
-
+@login_required(login_url='/login/')
 @csrf_exempt
 def delete_product(request):
     product_id = request.GET.get('id')
@@ -231,6 +274,7 @@ def delete_product(request):
     return render(request, 'delete-product.html', dic)
 
 
+@login_required(login_url='/login/')
 @csrf_exempt
 def action_delete_product(request):
     product_id = request.POST['product_id'] if 'product_id' in request.POST else None

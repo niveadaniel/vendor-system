@@ -46,14 +46,16 @@
             <li class="nav-item active">
                 <a class="nav-brand" href="/list/products/">Produtos</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-brand" href="/admin">Administrador</a>
-            </li>
+            {% if request.user.is_staff %}
+                <li class="nav-item active">
+                    <a class="nav-brand" href="/admin">Administrador</a>
+                </li>
+            {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a class="nav-brande" href="#" id="" role="button" data-toggle="">
-                  <a href="/"><i class="fa fa-power-off"></i>Sair</a>
+                  <a href="/logout/"><i class="fa fa-power-off"></i>Sair</a>
                 </a>
             </li>
         </ul>
