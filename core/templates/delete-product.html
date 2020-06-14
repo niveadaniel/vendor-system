@@ -6,10 +6,30 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body">
-            <input type="hidden" id="product_id" value="{{product.id}}">
-            Deseja realmente excluir o produto "{{product.name}}"?
-        </div>
+        <form enctype="multipart/form-data" method="POST" id="delete_product_form" class="delete_product_form" action="{% url 'action_delete_product' %}">
+            <div class="modal-body" id="form-div">
+                {% if product %}
+                    <input type="hidden" name="product_id" id="product_id" value="{{product.id}}">
+                    Deseja realmente excluir o produto "{{product.name}}"?
+                {% else %}
+                    <p><b>Atenção:</b> Esta ação excluirá todos os produtos do fornecedor selecionado.</p>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <label class="control-label"><b>Fornecedor</b></label>
+                            <select class="selectpicker form-control" name="vendor_products" id="vendor_products" data-live-search="True">
+                                <option value="">Todos</option>
+                                {% for vendor_product in vendor_products %}
+                                    <option value="{{vendor_product.id}}">{{vendor_product}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                {% endif %}
+
+            </div>
+        </form>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" id="delete-product" data-dismiss="modal">Excluir</button>
             <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -17,24 +37,28 @@
     </div>
 </div>
 <script>
-      $(document).ready(function(){
-            $('#delete-product').click(function(e){
-                  e.preventDefault();
-                  $.ajax({
-                        type: 'GET',
-                        url: '/api/delete_product/' + $('#product_id').val() + '/',
-                        data: {'id': $('#product_id').val()},
-                        processData: false,
-                        contentType: false,
-                        success: function(data){
-                              if(data.success){
-                                    location.href = '/list/products/';
-                              }
-                              else{
-                                    alert(data.message);
-                              }
-                        }
-                  });
+    $(document).ready(function(){
+        $('#delete-product').click(function(e){
+            $form = $('.delete_product_form');
+            var form = document.getElementById('delete_product_form');
+            var formData = new FormData(form);
+            e.preventDefault();
+            $.ajax({
+                type: $form.attr('method'),
+                url: $form.attr('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(data){
+                      if(data.success){
+                            location.href = '/list/products/';
+                      }
+                      else{
+                            alert(data.message);
+                      }
+                }
             });
-      });
+        });
+    });
 </script>

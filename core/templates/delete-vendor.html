@@ -1,29 +1,37 @@
 <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title" id="exampleModalLongTitle"><b>Excluir</b></h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <form enctype="multipart/form-data" method="POST" id="delete_vendor_form" class="delete_vendor_form" action="{% url 'action_delete_vendor' %}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle"><b>Excluir</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="vendor_id" id="vendor_id" value="{{vendor.id}}">
+                Deseja realmente excluir o fornecedor "{{vendor.name}}"?
+                <br>
+                <br>
+                <p><b>Atenção:</b> Esta ação excluirá todos os produtos relacionados a ele.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="delete-vendor" data-dismiss="modal">Excluir</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+            </div>
         </div>
-        <div class="modal-body">
-            <input type="hidden" id="vendor_id" value="{{vendor.id}}">
-            Deseja realmente excluir o fornecedor "{{vendor.name}}"?
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" id="delete-vendor" data-dismiss="modal">Exlcuir</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-        </div>
-    </div>
+    </form>
 </div>
 <script>
       $(document).ready(function(){
             $('#delete-vendor').click(function(e){
+                  $form = $('.delete_vendor_form');
+                  var form = document.getElementById('delete_vendor_form');
+                  var formData = new FormData(form);
                   e.preventDefault();
                   $.ajax({
-                        type: 'GET',
-                        url: '/api/delete_vendor/' + $('#vendor_id').val() + '/',
-                        data: {'id': $('#vendor_id').val()},
+                        type: $form.attr('method'),
+                        url: $form.attr('action'),
+                        data: formData,
                         processData: false,
                         contentType: false,
                         success: function(data){

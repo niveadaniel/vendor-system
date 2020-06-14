@@ -42,20 +42,24 @@ def save_vendor(request):
                 existing_vendor_cnpj = Vendor.objects.filter(cnpj_vendor=cnpj)
                 if existing_vendor_cnpj:
                     return JsonResponse({'success': False, 'message': 'CNPJ já cadastrado no sistema'})
+                else:
+                    Vendor.objects.filter(id=vendor_id).update(name=name,
+                                                                        cnpj_vendor=cnpj,
+                                                                        city=city)
+                    return JsonResponse({'success': True})
             else:
-                vendor = Vendor.objects.filter(id=vendor_id).update(name=name,
+                Vendor.objects.filter(id=vendor_id).update(name=name,
                                                                     cnpj_vendor=cnpj,
                                                                     city=city)
-                vendor = Vendor.objects.get(id=vendor_id)
-                return JsonResponse({'success': True, 'id': vendor.id})
+                return JsonResponse({'success': True})
         else:
             existing_vendor_cnpj = Vendor.objects.filter(cnpj_vendor=cnpj)
             if existing_vendor_cnpj:
                 return JsonResponse({'success': False, 'message': 'CNPJ já cadastrado no sistema'})
             else:
-                vendor = Vendor.objects.create(name=name, cnpj_vendor=cnpj, city=city)
+                Vendor.objects.create(name=name, cnpj_vendor=cnpj, city=city)
 
-                return JsonResponse({'success': True ,'id': vendor.id})
+                return JsonResponse({'success': True})
 
 
 def create_data_table_vendor(vendor):
@@ -74,9 +78,9 @@ def create_data_table_vendor(vendor):
                                     "<button type='button' class='btn btn-success btn-sm' id=''>"
                                         "<span class='glyphicon glyphicon-edit'></span></button>"
                                 "</a>" % str(v.id) +
-                                "<a href='/list/products/?id=%s'>"
+                                "<a href='/edit/product/?vendor=%s'>"
                                    "<button type='button' class='btn btn-primary btn-sm'>"
-                                        "Produtos"
+                                        "<span class='glyphicon glyphicon-plus'></span> Produto"
                                    "</button>"
                                 "</a>" % str(v.id)])
     return vendor_list
@@ -108,8 +112,11 @@ def delete_vendor(request):
 
 
 @csrf_exempt
-def action_delete_vendor(request, vendor_id):
+def action_delete_vendor(request):
+    print(request.POST)
+    vendor_id = request.POST['vendor_id']
     if vendor_id:
+        Products.objects.filter(vendor_id=vendor_id).delete()
         Vendor.objects.filter(id=vendor_id).delete()
         return JsonResponse({'success':True})
     else:
@@ -150,15 +157,12 @@ def get_list_products(request):
     value = request.POST['search[value]']
     products = Products.objects.all()
     if vendor:
-        print(vendor)
         products = Products.objects.filter(vendor_id=vendor)
     if value:
         products = Products.objects.filter(Q(name__icontains=value) |
                                    Q(code__icontains=value) |
                                    Q(price__icontains=value) |
                                    Q(vendor__name__icontains=value))
-
-    print(products)
 
     total = products.count()
     products_list = create_data_table_products(products)
@@ -167,13 +171,19 @@ def get_list_products(request):
 
 @csrf_exempt
 def edit_product(request):
+    vendor_id = request.GET['vendor'] if 'vendor' in request.GET else None
     product_id = request.GET.get('id')
     if product_id:
         product = Products.objects.get(id=product_id)
     else:
         product = None
     vendor = Vendor.objects.all()
-    dic = {'vendor': vendor, 'product': product}
+    selected_vendor = None
+    existed_vendor = False
+    if vendor_id:
+        selected_vendor = Vendor.objects.get(id=vendor_id)
+        existed_vendor = True
+    dic = {'vendor': vendor, 'product': product, 'selected_vendor': selected_vendor, 'existed_vendor': existed_vendor}
     return render(request, 'edit-product.html', dic)
 
 
@@ -192,7 +202,7 @@ def save_product(request):
     code = request.POST['code']
     price = request.POST['price'].replace('.', '').replace(',', '.') if request.POST['price'] else None
     vendor = request.POST['vendor']
-
+    existed_vendor = request.POST['existed_vendor']
     if product_id:
         Products.objects.filter(id=product_id).update(name=name,
                                                       code=code,
@@ -203,22 +213,36 @@ def save_product(request):
                                 price=price,
                                 vendor_id=vendor)
 
-    return JsonResponse({'success': True})
+    if existed_vendor == 'False':
+        return JsonResponse({'success': True, 'existed_vendor': False})
+    else:
+        return JsonResponse({'success': True, 'existed_vendor': True})
+
 
 
 @csrf_exempt
 def delete_product(request):
     product_id = request.GET.get('id')
+    vendor_products = Vendor.objects.all()
+    product = None
     if product_id:
         product = Products.objects.get(id=product_id)
-    dic = {'product': product}
+    dic = {'product': product, 'vendor_products': vendor_products}
     return render(request, 'delete-product.html', dic)
 
 
 @csrf_exempt
-def action_delete_product(request, product_id):
+def action_delete_product(request):
+    product_id = request.POST['product_id'] if 'product_id' in request.POST else None
+    vendor_products = request.POST['vendor_products'] if 'vendor_products' in request.POST else None
     if product_id:
         Products.objects.filter(id=product_id).delete()
         return JsonResponse({'success':True})
+    elif vendor_products:
+        products = Products.objects.filter(vendor_id=vendor_products).delete()
+        return JsonResponse({'success': True})
+    elif 'vendor_products' in request.POST and not vendor_products:
+        Products.objects.all().delete()
+        return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'message': 'Não foi possível excluir'})

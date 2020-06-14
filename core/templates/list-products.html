@@ -10,12 +10,12 @@
 <style>
 
     .thead {
-        background-color: #ffb84d;
+        background-color: #D3D3D3;
     }
 
     div button {
         float: right;
-        margin-right: 10px;
+        margin-right: 20px;
     }
 
 </style>
@@ -26,7 +26,7 @@
     <br>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <label class="control-label"><b>Fornecedor</b></label>
                 <select class="selectpicker form-control" name="vendor" id="vendor" data-live-search="True">
                     <option value="">Todos</option>
@@ -35,9 +35,14 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-sm-11">
+            <div class="col-sm-8">
                 <a href="/edit/product/">
-                    <button class="btn btn-success" id="" type="button" style="margin-right: -75px; margin-top: -32px;">Cadastrar Produto</button>
+                    <button class="btn btn-success" id="" type="button" style="margin-right: 90px; margin-top: 28px;">Cadastrar Produto</button>
+                </a>
+            </div>
+            <div class="col-sm-11">
+                <a href="/delete/product/" notification-modal="1">
+                    <button class="btn btn-warning" type="button" style="margin-right: -50px; margin-top: -33px;">Deletar Produtos</button>
                 </a>
             </div>
         </div>
@@ -61,7 +66,7 @@
             </table>
         </div>
     </div>
-    <div class="modal fade delete_vendor" tabindex="-1" aria-hidden="true">
+    <div class="modal fade delete_product" tabindex="-1" aria-hidden="true">
 </div>
 <script>
     var data = [];
@@ -87,9 +92,9 @@
                 "language": {
                     "lengthMenu": "Mostrando _MENU_ registros por página.",
                     "zeroRecords": "Não foram encontrados registros",
-                    "info": "Exibindo _START_ até _END_ de um total de _TOTAL_ fornecedores",
+                    "info": "Exibindo _START_ até _END_ de um total de _TOTAL_ produtos",
                     "infoEmpty": "Não foram encontrados registros",
-                    "infoFiltered": "(filtrados de um total de _MAX_ fornecedores)",
+                    "infoFiltered": "(filtrados de um total de _MAX_ produtos)",
                     "paginate": {
                         "first": "Primeiro",
                         "last": "Último",
@@ -104,8 +109,8 @@
     $(document).on('click', 'a[notification-modal]', function(e) {
         e.preventDefault();
         $.get($(this).attr('href')).done(function (html) {
-            $('.modal.delete_vendor').html(html);
-            $('.modal.delete_vendor').modal('show');
+            $('.modal.delete_product').html(html);
+            $('.modal.delete_product').modal('show');
         });
     });
     $('#vendor').change(function(){
