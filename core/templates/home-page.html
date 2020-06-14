@@ -52,13 +52,26 @@
                             <h2>Bem vindo!</h2>
                         </div>
                     </div>
-                    <div class="row" style="margin-left:4px; margin-top:20px;">
-                        <div class="col-sm-3">
-                            <a href="/list/vendor/">
-                                <button type="button" class="btn btn-success" id="login" style="width: 90px">Começar</button>
-                            </a>
+                    <form action="submit" method="POST"> {% csrf_token %}
+                        <div class="row" id="forms" style="margin-left:4px; margin-top:4px;">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="username">Usuário:</label>
+                                    <input type="text" class="form-control" id="username", name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Senha:</label>
+                                    <input type="password" class="form-control" id="password", name="password">
+                                </div>
+                                {% for message in messages %}
+                                <div class="alert alert-danger">
+                                    <strong>Error!</strong> {{ message }}
+                                </div>
+                                {% endfor %}
+                                <button type="submit" class="btn btn-success" style="width: 80px;">Logar</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
