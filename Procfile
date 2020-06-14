@@ -1,1 +1,1 @@
-web: gunicorn vendorsystem.wsgi
+web: gunicorn vendorapp.wsgi
